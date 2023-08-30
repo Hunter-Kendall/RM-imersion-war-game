@@ -12,7 +12,6 @@ class RoundResult
   end
 
   def cards_picked_up
-    player.takes_cards(cards_on_table.shuffle)
     self.cards_on_table = cards_on_table - [winning_card]
 
     cards_on_table_string = ''

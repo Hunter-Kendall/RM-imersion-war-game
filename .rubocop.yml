@@ -17,6 +17,7 @@ Metrics/BlockLength:
     - '**/*.rake'
     - 'spec/*.rb'
 
+
 # Hard to make this pass always and want to keep flexibility
 Layout/ArrayAlignment:
   Enabled: false

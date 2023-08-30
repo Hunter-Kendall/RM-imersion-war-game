@@ -34,18 +34,11 @@ class WarGame
     end
   end
 
-  def player_takes_cards(player)
-    player.takes_cards(played_cards)
-    played_cards.clear
-  end
-
   def compare_cards(card1, card2, cards_on_table)
     if card2.nil? || (!card1.nil? && (card1.rank_rating > card2.rank_rating))
-
-      puts RoundResult.new(player1, card1, cards_on_table)
+      puts generate_result(player1, card1, cards_on_table)
     elsif card1.nil? || card2.rank_rating > card1.rank_rating
-
-      puts RoundResult.new(player2, card2, cards_on_table)
+      puts generate_result(player2, card2, cards_on_table)
     else
       play_round(cards_on_table)
     end
@@ -58,13 +51,19 @@ class WarGame
 
     raise NotShuffled if card1.nil? && card2.nil?
 
-    compare_cards(card1, card2, cards_on_table)
+    round_result = compare_cards(card1, card2, cards_on_table)
     check_for_winner!
-    nil
+
+    round_result
   end
 
   def start
     deck.shuffle_cards
     deal_cards
+  end
+
+  def generate_result(winner, card, cards_on_table)
+    winner.takes_cards(cards_on_table.shuffle)
+    RoundResult.new(winner, card, cards_on_table)
   end
 end
