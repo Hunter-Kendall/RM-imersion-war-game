@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 require_relative '../lib/war_player'
-require_relative '../lib/card_deck.rb'
-require_relative '../lib/playing_card.rb'
+require_relative '../lib/card_deck'
+require_relative '../lib/playing_card'
 
 describe 'WarPlayer' do
   name = 'Hunter'
-  context "#draw"do
-    
-    it "can recieve cards" do
+  context '#draw' do
+    it 'can recieve cards' do
       deck = CardDeck.new
       player = WarPlayer.new(name)
       player.draw(deck)
       expect(player.hand_size).to eq(1)
     end
   end
-  context "#flip_card" do
+  context '#flip_card' do
     it 'flips the correct card' do
       deck = CardDeck.new
       player = WarPlayer.new(name)
@@ -23,23 +24,23 @@ describe 'WarPlayer' do
       expect(flipped_card.rank).to eq('A')
     end
   end
-  context "#takes_cards" do
-    it "adds all the cards from the played cards pile" do
-      played_cards = [PlayingCard.new('A', 'S'), 
-                      PlayingCard.new('K', 'S'), 
-                      PlayingCard.new('Q', 'S'), 
+  context '#takes_cards' do
+    it 'adds all the cards from the played cards pile' do
+      played_cards = [PlayingCard.new('A', 'S'),
+                      PlayingCard.new('K', 'S'),
+                      PlayingCard.new('Q', 'S'),
                       PlayingCard.new('J', 'S')]
       player = WarPlayer.new(name)
       player.takes_cards(played_cards)
       expect(player.hand_size).to eq(4)
     end
 
-    it "adds the cards in order" do
+    it 'adds the cards in order' do
       bottom_card = PlayingCard.new('K', 'S')
       middle_card = PlayingCard.new('A', 'S')
       top_card =  PlayingCard.new('2', 'C')
       played_cards = [middle_card, bottom_card]
-      
+
       player = WarPlayer.new(name)
       player.hand << top_card
       player.takes_cards(played_cards)

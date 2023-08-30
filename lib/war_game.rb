@@ -1,12 +1,16 @@
+# frozen_string_literal: true
+
 require_relative 'playing_card'
 require_relative 'card_deck'
 require_relative 'round_result'
-class WarGame
 
+# This class controlls the card game war
+class WarGame
   class NotShuffled < StandardError; end
 
   attr_accessor :player1, :player2, :deck, :winner
-  attr_reader  :played_cards
+  attr_reader :played_cards
+
   def initialize(player1, player2)
     @player1 = player1
     @player2 = player2
@@ -16,51 +20,50 @@ class WarGame
   end
 
   def deal_cards
-    while deck.cards_left > 0 do
-        player1.draw(deck)
-        player2.draw(deck)
+    while deck.cards_left.positive?
+      player1.draw(deck)
+      player2.draw(deck)
     end
   end
 
-    
   def check_for_winner!
-    if player2.hand_size == 0
+    if player2.hand_size.zero?
       self.winner = player1
-    elsif player1.hand_size == 0
+    elsif player1.hand_size.zero?
       self.winner = player2
     end
   end
 
   def player_takes_cards(player)
     player.takes_cards(played_cards)
-    self.played_cards.clear()
+    played_cards.clear
   end
 
+  def compare_cards(card1, card2, cards_on_table)
+    if card2.nil? || (!card1.nil? && (card1.rank_rating > card2.rank_rating))
+
+      puts RoundResult.new(player1, card1, cards_on_table)
+    elsif card1.nil? || card2.rank_rating > card1.rank_rating
+
+      puts RoundResult.new(player2, card2, cards_on_table)
+    else
+      play_round(cards_on_table)
+    end
+  end
 
   def play_round(cards_on_table = [])
-    card1, card2 = player1.flip_card, player2.flip_card
+    card1 = player1.flip_card
+    card2 = player2.flip_card
     cards_on_table.push(card1, card2).compact!
 
     raise NotShuffled if card1.nil? && card2.nil?
 
-    if card2.nil? || !card1.nil? && card1.rank_rating > card2.rank_rating
-      player1.takes_cards(cards_on_table.shuffle)
-      puts RoundResult.new(player1, card1, cards_on_table)
-      # puts "p1 #{player1.hand_size}, p2 #{player2.hand_size}"
-    elsif card1.nil? || !card2.nil? && card2.rank_rating > card1.rank_rating
-      player2.takes_cards(cards_on_table.shuffle)
-      puts RoundResult.new(player2, card2, cards_on_table)
-      # puts "p1 #{player1.hand_size}, p2 #{player2.hand_size}"
-    else
-      play_round(cards_on_table)
-
-    end
+    compare_cards(card1, card2, cards_on_table)
     check_for_winner!
-    return
+    nil
   end
 
   def start
-    puts "Starting Game"
     deck.shuffle_cards
     deal_cards
   end

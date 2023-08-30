@@ -1,5 +1,7 @@
-class RoundResult
+# frozen_string_literal: false
 
+# This class will be used to print the result of the round.
+class RoundResult
   attr_reader :player, :winning_card
   attr_accessor :cards_on_table
 
@@ -10,12 +12,12 @@ class RoundResult
   end
 
   def cards_picked_up
+    player.takes_cards(cards_on_table.shuffle)
     self.cards_on_table = cards_on_table - [winning_card]
-    
-    cards_on_table_string = ""
+
+    cards_on_table_string = ''
 
     cards_on_table.each do |card|
-
       cards_on_table_string << "#{card.rank} "
     end
     cards_on_table_string
@@ -24,5 +26,4 @@ class RoundResult
   def to_s
     "#{player.name} wins with #{winning_card.rank} and takes #{cards_picked_up}"
   end
-
 end

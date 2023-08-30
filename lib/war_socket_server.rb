@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'socket'
 
+# This class is the war socket server.
 class WarSocketServer
-  def initialize
-  end
-
   def port_number
     3336
   end
@@ -16,17 +16,16 @@ class WarSocketServer
     @server = TCPServer.new(port_number)
   end
 
-  def accept_new_client(player_name = "Random Player")
-    client = @server.accept_nonblock
+  def accept_new_client(_player_name = 'Random Player')
+    @server.accept_nonblock
     # associate player and client
   rescue IO::WaitReadable, Errno::EINTR
-    puts "No client to accept"
+    puts 'No client to accept'
   end
 
-  def create_game_if_possible
-  end
-  
+  def create_game_if_possible; end
+
   def stop
-    @server.close if @server
+    @server&.close
   end
 end

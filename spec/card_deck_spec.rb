@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../lib/card_deck'
 
 describe 'CardDeck' do
@@ -10,8 +12,8 @@ describe 'CardDeck' do
   it 'should deal the top card' do
     deck = CardDeck.new
     card = deck.deal
-    expect(card.rank).to eq ("A")
-    expect(card.suit).to eq ('C')
+    expect(card.rank).to eq('A')
+    expect(card.suit).to eq('C')
     expect(deck.cards_left).to eq 51
   end
 
@@ -30,7 +32,7 @@ describe 'CardDeck' do
     end
   end
   context '#shuffle_cards' do
-    it 'shuffles the array for deck2 and then compares the first value of it to the first value of deck 1. they should not be equal' do
+    it 'shuffles the array for deck2 and then compares the first value of it to the first value of deck 1' do
       deck1 = CardDeck.new
       deck2 = CardDeck.new
       expect(deck1.cards[0]).to eq(deck2.cards[0])
@@ -39,7 +41,7 @@ describe 'CardDeck' do
     end
     it 'shuffles the array without parameter' do
       deck = CardDeck.new
-      expect{deck.shuffle_cards}.to_not raise_error 
+      expect { deck.shuffle_cards }.to_not raise_error
     end
   end
 end

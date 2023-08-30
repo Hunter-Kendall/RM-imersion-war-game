@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'socket'
 require_relative '../lib/war_socket_server'
 
 class MockWarSocketClient
-  attr_reader :socket
-  attr_reader :output
+  attr_reader :socket, :output
 
   def initialize(port)
     @socket = TCPSocket.new('localhost', port)
@@ -13,15 +14,15 @@ class MockWarSocketClient
     @socket.puts(text)
   end
 
-  def capture_output(delay=0.1)
+  def capture_output(delay = 0.1)
     sleep(delay)
     @output = @socket.read_nonblock(1000) # not gets which blocks
   rescue IO::WaitReadable
-    @output = ""
+    @output = ''
   end
 
   def close
-    @socket.close if @socket
+    @socket&.close
   end
 end
 
@@ -33,25 +34,23 @@ describe WarSocketServer do
 
   after(:each) do
     @server.stop
-    @clients.each do |client|
-      client.close
-    end
+    @clients.each(&:close)
   end
 
-  it "is not listening on a port before it is started"  do
-    expect {MockWarSocketClient.new(@server.port_number)}.to raise_error(Errno::ECONNREFUSED)
+  it 'is not listening on a port before it is started' do
+    expect { MockWarSocketClient.new(@server.port_number) }.to raise_error(Errno::ECONNREFUSED)
   end
 
-  it "accepts new clients and starts a game if possible" do
+  it 'accepts new clients and starts a game if possible' do
     @server.start
     client1 = MockWarSocketClient.new(@server.port_number)
     @clients.push(client1)
-    @server.accept_new_client("Player 1")
+    @server.accept_new_client('Player 1')
     @server.create_game_if_possible
     expect(@server.games.count).to be 0
     client2 = MockWarSocketClient.new(@server.port_number)
     @clients.push(client2)
-    @server.accept_new_client("Player 2")
+    @server.accept_new_client('Player 2')
     @server.create_game_if_possible
     expect(@server.games.count).to be 1
   end
